@@ -7,23 +7,25 @@ using sedes.Models;
 
 namespace sedes.Data
 {
-    public class RoomContext : DbContext
+    public class SedesContext : DbContext
     {
-        public RoomContext (DbContextOptions<RoomContext> options)
+        public SedesContext(DbContextOptions<SedesContext> options)
             : base(options)
         {
         }
 
-        public DbSet<sedes.Models.Room> Room { get; set; }
+        public DbSet<Room> Room { get; set; }
 
-        public DbSet<sedes.Models.Seat> Seats { get; set; }
-        public DbSet<Enrollment> Enrollments { get; set; }
-        
+        public DbSet<Seat> Seat { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Room>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
+            modelBuilder.Entity<Room>().HasMany(c => c.Seats);
             modelBuilder.Entity<Room>().ToTable("Room");
-            modelBuilder.Entity<Enrollment>().ToTable("Enrollment");
             modelBuilder.Entity<Seat>().ToTable("Seat");
         }
     }

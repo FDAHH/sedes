@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -12,37 +12,43 @@ namespace sedes.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RoomController : ControllerBase
+    public class SeatController : ControllerBase
     {
 
         private readonly ILogger<RoomController> _logger;
         private readonly SedesContext _dbContext;
 
-        public RoomController(ILogger<RoomController> logger, SedesContext dbContext)
+        public SeatController(ILogger<RoomController> logger, SedesContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
         }
 
         [HttpGet]
-        public IEnumerable<Room> Get()
+        public IEnumerable<Seat> Get()
         {
 
-            return _dbContext.Room.ToList();
+            return _dbContext.Seat.ToList();
         }
 
+
         [HttpPut]
-        public IActionResult Put(int BuildingID, int Floor, string Name)
+        public IActionResult Put(int RoomId)
         {
-            var dbresutl = _dbContext.Room.Add(new Room
-            {
-                BuildingID = BuildingID,
-                Floor = Floor,
-                Name = Name
-            });
+
+
             try
             {
+                var room = _dbContext.Room.Single(a => (a.Id == RoomId));
+                // Init list if null
+                room.Seats = room.Seats == null ? new List<Seat>() : room.Seats;
+                room.Seats.Add(new Seat { });
+
                 _dbContext.SaveChanges();
+            }
+            catch (InvalidOperationException)
+            {
+                return new BadRequestObjectResult("Cant find Room with Id:" + RoomId);
             }
             catch (DbUpdateException e)
             {
@@ -50,7 +56,7 @@ namespace sedes.Controllers
                 return new BadRequestObjectResult(e.InnerException?.Message);
             }
 
-            return new OkObjectResult(dbresutl.Entity);
+            return new AcceptedResult();
         }
     }
 }

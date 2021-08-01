@@ -34,8 +34,10 @@ namespace sedes
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "sedes", Version = "v1" });
             });
 
-            services.AddDbContext<RoomContext>(options =>
-                    options.UseSqlite(Configuration.GetConnectionString("RoomContext")));
+            services.AddDbContext<SedesContext>(options =>
+                    options.UseSqlite(Configuration.GetConnectionString("SedesDbConnection")));
+
+            services.AddDatabaseDeveloperPageExceptionFilter();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
