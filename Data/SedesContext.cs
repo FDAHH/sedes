@@ -15,8 +15,9 @@ namespace sedes.Data
         }
         public DbSet<Building> Building { get; set; }
         public DbSet<Room> Room { get; set; }
-
         public DbSet<Seat> Seat { get; set; }
+        public DbSet<Person> Person { get; set; }
+        public DbSet<Reservation> Reservation { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -33,9 +34,13 @@ namespace sedes.Data
             
             modelBuilder.Entity<Building>().HasMany(c => c.Rooms);
             modelBuilder.Entity<Room>().HasMany(c => c.Seats);
+            modelBuilder.Entity<Reservation>().HasOne(c => c.Person);
+            modelBuilder.Entity<Reservation>().HasOne(d => d.Seat);
             modelBuilder.Entity<Building>().ToTable("Building");
             modelBuilder.Entity<Room>().ToTable("Room");
             modelBuilder.Entity<Seat>().ToTable("Seat");
+            modelBuilder.Entity<Person>().ToTable("Person");
+            modelBuilder.Entity<Reservation>().ToTable("Reservation");
         }
     }
 }
