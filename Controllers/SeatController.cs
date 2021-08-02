@@ -33,7 +33,7 @@ namespace sedes.Controllers
 
 
         [HttpPut]
-        public IActionResult Put(int RoomId)
+        public IActionResult Put(int RoomId, string name)
         {
 
 
@@ -41,9 +41,8 @@ namespace sedes.Controllers
             {
                 var room = _dbContext.Room.Single(a => (a.Id == RoomId));
                 // Init list if null
-                room.Seats = room.Seats == null ? new List<Seat>() : room.Seats;
-                room.Seats.Add(new Seat { });
-
+                room.Seats = room.Seats== null ?  new List<Seat>(): room.Seats;
+                room.Seats.Add(new Seat {name = name });
                 _dbContext.SaveChanges();
             }
             catch (InvalidOperationException)

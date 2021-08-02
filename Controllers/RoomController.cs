@@ -28,7 +28,9 @@ namespace sedes.Controllers
         public IEnumerable<Room> Get()
         {
 
-            return _dbContext.Room.ToList();
+            return _dbContext.Room
+            .Include(a => a.Seats)
+            .ToList();
         }
 
         [HttpPut]
@@ -38,7 +40,8 @@ namespace sedes.Controllers
             {
                 BuildingID = BuildingID,
                 Floor = Floor,
-                Name = Name
+                Name = Name,
+                Seats = new List<Seat>()
             });
             try
             {
