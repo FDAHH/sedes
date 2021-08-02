@@ -20,7 +20,7 @@ dotnet tool uninstall --global dotnet-aspnet-codegenerator
 dotnet tool install --global dotnet-aspnet-codegenerator --version 5.0.0-*  
 
 # Current Issues
-Seats are not save as part of Room 
+
 
 # ToDo Short
 Complete Model 
@@ -28,6 +28,8 @@ Complete Model
     Building
     Room
     Seat
+
+Reserver/Book Seats
 
 # ToDo Longterm
 Add Auth and User managment
