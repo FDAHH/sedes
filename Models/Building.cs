@@ -4,16 +4,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace sedes.Models
 {
-    public class Room
+    public class Building
     {
         [Key]
         public int Id { get; set; }
-        [MaxLength(100), Required]
-        public int Floor { get; set; }
         
         [MaxLength(100), Required]
         public string Name { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        public ICollection<Room> Rooms { get; set; }
     }
 
 }

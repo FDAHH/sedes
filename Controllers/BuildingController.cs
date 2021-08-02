@@ -12,50 +12,49 @@ namespace sedes.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class SeatController : ControllerBase
+    public class BuildingController : ControllerBase
     {
 
-        private readonly ILogger<RoomController> _logger;
+        private readonly ILogger<BuildingController> _logger;
         private readonly SedesContext _dbContext;
 
-        public SeatController(ILogger<RoomController> logger, SedesContext dbContext)
+        public BuildingController(ILogger<BuildingController> logger, SedesContext dbContext)
         {
             _logger = logger;
             _dbContext = dbContext;
         }
 
         [HttpGet]
-        public IEnumerable<Seat> Get()
+        public IEnumerable<Building> Get()
         {
 
-            return _dbContext.Seat.ToList();
+            return _dbContext.Building
+            .Include(a => a.Rooms)
+            .ToList();
         }
 
-
         [HttpPut]
-        public IActionResult Put(int RoomId, string name)
+        public IActionResult Put(string Name)
         {
-
-
             try
             {
-                var room = _dbContext.Room.Single(a => (a.Id == RoomId));
-                // Init list if null
-                room.Seats = room.Seats== null ?  new List<Seat>(): room.Seats;
-                room.Seats.Add(new Seat {Name = name });
+                Building item = new Building
+                {
+                    Name = Name
+                };
+                var dbResult = _dbContext.Building.Add(item);
                 _dbContext.SaveChanges();
+                return new OkObjectResult(dbResult.Entity);
             }
             catch (InvalidOperationException)
             {
-                return new BadRequestObjectResult("Cant find Room with Id:" + RoomId);
+                return new BadRequestObjectResult("Cant find Building with Id:" );
             }
             catch (DbUpdateException e)
             {
                 //TODO: should not expose Error Message to Caller
                 return new BadRequestObjectResult(e.InnerException?.Message);
             }
-
-            return new AcceptedResult();
         }
     }
 }

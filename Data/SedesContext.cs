@@ -13,7 +13,7 @@ namespace sedes.Data
             : base(options)
         {
         }
-
+        public DbSet<Building> Building { get; set; }
         public DbSet<Room> Room { get; set; }
 
         public DbSet<Seat> Seat { get; set; }
@@ -24,7 +24,16 @@ namespace sedes.Data
             modelBuilder.Entity<Room>()
                 .HasIndex(u => u.Name)
                 .IsUnique();
+            modelBuilder.Entity<Building>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
+            modelBuilder.Entity<Seat>()
+                .HasIndex(u => u.Name)
+                .IsUnique();
+            
+            modelBuilder.Entity<Building>().HasMany(c => c.Rooms);
             modelBuilder.Entity<Room>().HasMany(c => c.Seats);
+            modelBuilder.Entity<Building>().ToTable("Building");
             modelBuilder.Entity<Room>().ToTable("Room");
             modelBuilder.Entity<Seat>().ToTable("Seat");
         }
