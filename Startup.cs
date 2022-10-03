@@ -1,17 +1,17 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Microsoft.OData.Edm;
+using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
-using Microsoft.EntityFrameworkCore;
 using sedes.Data;
+using sedes.Models;
+using sedes.Models.Sap;
 
 namespace sedes
 {
@@ -20,6 +20,15 @@ namespace sedes
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            var mapconfiguration = new MapperConfiguration(cfg =>
+            {
+                cfg.CreateMap<ZSeat, Seat>().ReverseMap();
+
+            });
+            // only during development, validate your mappings; remove it before release
+            mapconfiguration.AssertConfigurationIsValid();
+            // use DI (http://docs.automapper.org/en/latest/Dependency-injection.html) or create the mapper yourself
+            var mapper = mapconfiguration.CreateMapper();
         }
 
         public IConfiguration Configuration { get; }
@@ -27,8 +36,7 @@ namespace sedes
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-
-            services.AddControllers();
+            services.AddControllers().AddOData(opt => opt.AddRouteComponents("odata", GetEdmModel()).EnableQueryFeatures());
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "sedes", Version = "v1" });
@@ -59,5 +67,19 @@ namespace sedes
                 endpoints.MapControllers();
             });
         }
+        private static IEdmModel GetEdmModel()
+        {
+            ODataConventionModelBuilder builder = new();
+            //builder.EntityType<Building>().HasKey(c => c.Id).HasMany<Room>(c => c.Rooms);
+            //builder.EntityType<Room>().HasKey(c => c.Id).HasMany(c => c.Seats);
+            //builder.EntityType<Seat>().HasKey(c => c.Id);
+            builder.EntitySet<Building>("Building");
+            builder.EntitySet<Room>("Room");
+            builder.EntitySet<Seat>("Seat");
+
+
+            return builder.GetEdmModel();
+        }
     }
+
 }

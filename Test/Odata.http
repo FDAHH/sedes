@@ -1,0 +1,9 @@
+
+Get http://localhost:3212/oData/$metadata
+
+
+
+
+
+Get http://localhost:3212/oData/Building
+

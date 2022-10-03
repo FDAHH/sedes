@@ -1,12 +1,12 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using sedes.Data;
+using sedes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using sedes.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using sedes.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace sedes.Controllers
 {
@@ -24,25 +24,48 @@ namespace sedes.Controllers
             _dbContext = dbContext;
         }
 
-        [HttpGet]
-        public IEnumerable<Seat> Get()
-        {
 
-            return _dbContext.Seat.ToList();
+        /// <summary>
+        /// Get all Seats.
+        /// </summary>
+        /// <group>Seat</group>
+        /// <verb>Get</verb>
+        /// <param name="RoomId" cref="int">Room id </param>
+        /// <response code="200"><see cref="Seat"/>Sample object retrieved</response>
+        /// <returns>The list of seat</returns>
+        [HttpGet]
+        [EnableQuery]
+        public IQueryable<Seat> Get(int RoomId = -1)
+        {
+            if (RoomId > 0)
+            {
+                var room = _dbContext.Room.Single(a => (a.Id == RoomId));
+                //var room = _dbContext.Seat.Where((e) => (e.RoomId = RoomId));
+                var seats = _dbContext.Seat.Where(s => s.Room == room);
+                return seats;
+            }
+
+            return _dbContext.Seat;
         }
 
-
+        /// <summary>
+        /// Add a new Seat.
+        /// </summary>
+        /// <group>Seat</group>
+        /// <verb>Put</verb>
+        /// <param name="RoomId" cref="int">Header param 1</param>
+        /// <param name="Name" cref="string">The object id</param>
+        /// <response code="201"><see cref="SampleObject1"/>Sample object retrieved</response>
+        /// <returns>The sample object 1</returns>
         [HttpPut]
-        public IActionResult Put(int RoomId, string name)
+        public IActionResult Put(int RoomId, string Name)
         {
-
-
             try
             {
                 var room = _dbContext.Room.Single(a => (a.Id == RoomId));
                 // Init list if null
-                room.Seats = room.Seats== null ?  new List<Seat>(): room.Seats;
-                room.Seats.Add(new Seat {Name = name });
+                room.Seats = room.Seats == null ? new List<Seat>() : room.Seats;
+                room.Seats.Add(new Seat { Name = Name });
                 _dbContext.SaveChanges();
             }
             catch (InvalidOperationException)

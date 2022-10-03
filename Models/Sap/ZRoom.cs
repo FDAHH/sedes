@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace sedes.Models
+namespace sedes.Models.Sap
 {
-    public class Room
+    public class ZRoom
     {
         [Key]
         public int Id { get; set; }
@@ -14,7 +14,7 @@ namespace sedes.Models
         [MaxLength(100), Required]
         public string Name { get; set; }
         public Building Building { get; set; }
-        public ICollection<Seat> Seats { get; set; }
+        public Seat[] Seats { get; set; }
     }
 
 }

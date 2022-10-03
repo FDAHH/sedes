@@ -60,5 +60,34 @@ namespace sedes.Controllers
                 return new BadRequestObjectResult(e.InnerException?.Message);
             }            
         }
+        [HttpPost]
+        public IEnumerable<Seat> GetAvailableSeats(int BuildingId, DateTime date )
+        {
+            List<Seat> d = new System.Collections.Generic.List<Seat>();
+            
+            var building = _dbContext.Building
+                    .Include(x => x.Rooms) 
+                    .ThenInclude(x => x.Seats)
+                    .Single(x => (x.Id ==BuildingId));
+            var availableSeats = _dbContext.Seat.Where(a => (a.isAvailable == true));
+
+            var reservationForDate = _dbContext.Reservation
+                    .Where(a => (a.Start >= date && a.End <= date && a.BuildingId == BuildingId))
+                    .Select(p => p.SeatId)
+                    .ToHashSet<int>();
+            // TODO: Find rooms that have no reservation during for give DateTime
+
+            
+            var seats =  building.Rooms
+            .Where(x => (x.Seats.All(y => (!reservationForDate.Contains(y.Id)))))
+            .Select(x => (x.Seats));
+            
+
+            foreach(var i in seats) {
+                d.AddRange(i);
+            }
+            return d;
+        }
+
     }
 }

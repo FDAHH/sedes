@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using sedes.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.OData.Query;
 
 namespace sedes.Controllers
 {
@@ -25,12 +26,13 @@ namespace sedes.Controllers
         }
 
         [HttpGet]
-        public IEnumerable<Room> Get()
+        [EnableQuery]
+        public IQueryable<Room> Get()
         {
 
             return _dbContext.Room
-            .Include(a => a.Seats)
-            .ToList();
+            .Include(a => a.Seats);
+            
         }
 
         [HttpPut]

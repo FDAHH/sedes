@@ -36,6 +36,7 @@ namespace sedes.Data
             modelBuilder.Entity<Room>().HasMany(c => c.Seats);
             modelBuilder.Entity<Reservation>().HasOne(c => c.Person);
             modelBuilder.Entity<Reservation>().HasOne(d => d.Seat);
+            modelBuilder.Entity<Reservation>().HasOne(e => e.Building);
             modelBuilder.Entity<Building>().ToTable("Building");
             modelBuilder.Entity<Room>().ToTable("Room");
             modelBuilder.Entity<Seat>().ToTable("Seat");
