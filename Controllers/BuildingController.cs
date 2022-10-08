@@ -1,13 +1,14 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using sedes.Models;
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using sedes.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.OData.Query;
+using sedes.Models;
+using sedes.Models.Frontend;
+using System;
+using System.Linq;
 
 namespace sedes.Controllers
 {
@@ -18,21 +19,24 @@ namespace sedes.Controllers
 
         private readonly ILogger<BuildingController> _logger;
         private readonly SedesContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public BuildingController(ILogger<BuildingController> logger, SedesContext dbContext)
+        public BuildingController(ILogger<BuildingController> logger, SedesContext dbContext, IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _mapper = mapper;
+
         }
 
         [HttpGet]
         [EnableQuery]
-        public IQueryable<Building> Get()
+        public IQueryable<ZBuilding> Get()
         {
 
             return _dbContext.Building
-            .Include(a => a.Rooms);
-            
+                .ProjectTo<ZBuilding>(_mapper.ConfigurationProvider);
+
         }
 
         [HttpPut]
@@ -50,7 +54,7 @@ namespace sedes.Controllers
             }
             catch (InvalidOperationException)
             {
-                return new BadRequestObjectResult("Cant find Building with Id:" );
+                return new BadRequestObjectResult("Cant find Building with Id:");
             }
             catch (DbUpdateException e)
             {

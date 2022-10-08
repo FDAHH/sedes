@@ -1,4 +1,3 @@
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.OData;
@@ -11,7 +10,8 @@ using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using sedes.Data;
 using sedes.Models;
-using sedes.Models.Sap;
+using sedes.Models.Maps;
+using sedes.Models.Frontend;
 
 namespace sedes
 {
@@ -20,15 +20,7 @@ namespace sedes
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
-            var mapconfiguration = new MapperConfiguration(cfg =>
-            {
-                cfg.CreateMap<ZSeat, Seat>().ReverseMap();
 
-            });
-            // only during development, validate your mappings; remove it before release
-            mapconfiguration.AssertConfigurationIsValid();
-            // use DI (http://docs.automapper.org/en/latest/Dependency-injection.html) or create the mapper yourself
-            var mapper = mapconfiguration.CreateMapper();
         }
 
         public IConfiguration Configuration { get; }
@@ -41,7 +33,7 @@ namespace sedes
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "sedes", Version = "v1" });
             });
-
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddDbContext<SedesContext>(options =>
                     options.UseSqlite(Configuration.GetConnectionString("SedesDbConnection")));
 
@@ -70,12 +62,9 @@ namespace sedes
         private static IEdmModel GetEdmModel()
         {
             ODataConventionModelBuilder builder = new();
-            //builder.EntityType<Building>().HasKey(c => c.Id).HasMany<Room>(c => c.Rooms);
-            //builder.EntityType<Room>().HasKey(c => c.Id).HasMany(c => c.Seats);
-            //builder.EntityType<Seat>().HasKey(c => c.Id);
-            builder.EntitySet<Building>("Building");
-            builder.EntitySet<Room>("Room");
-            builder.EntitySet<Seat>("Seat");
+            builder.EntitySet<ZBuilding>("Building");
+            builder.EntitySet<ZRoom>("Room");
+            builder.EntitySet<ZSeat>("Seat");
 
 
             return builder.GetEdmModel();

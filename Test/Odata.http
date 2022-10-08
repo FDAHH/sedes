@@ -1,8 +1,18 @@
+Get http://localhost:3212/oData/Room?select=Name&,eats$expand=Seats
 
 Get http://localhost:3212/oData/$metadata
 
 
 
+
+
+
+
+
+
+Get http://localhost:3212/oData/building?$expand=Rooms(expand=Seats)
+
+Get http://localhost:3212/oData/Room?$expand=Building
 
 
 Get http://localhost:3212/oData/Building

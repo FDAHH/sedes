@@ -8,6 +8,9 @@ using Microsoft.Extensions.Logging;
 using sedes.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.OData.Query;
+using AutoMapper.QueryableExtensions;
+using sedes.Models.Frontend;
+using AutoMapper;
 
 namespace sedes.Controllers
 {
@@ -18,21 +21,23 @@ namespace sedes.Controllers
 
         private readonly ILogger<RoomController> _logger;
         private readonly SedesContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public RoomController(ILogger<RoomController> logger, SedesContext dbContext)
+        public RoomController(ILogger<RoomController> logger, SedesContext dbContext, IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
         [HttpGet]
         [EnableQuery]
-        public IQueryable<Room> Get()
+        public IQueryable<ZRoom> Get()
         {
 
-            return _dbContext.Room
-            .Include(a => a.Seats);
-            
+            return _dbContext.Room.ProjectTo<ZRoom>(_mapper.ConfigurationProvider);
+
+
         }
 
         [HttpPut]

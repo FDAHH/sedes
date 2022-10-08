@@ -1,9 +1,12 @@
+using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.OData.Query;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using sedes.Data;
 using sedes.Models;
+using sedes.Models.Frontend;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,11 +20,13 @@ namespace sedes.Controllers
 
         private readonly ILogger<RoomController> _logger;
         private readonly SedesContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public SeatController(ILogger<RoomController> logger, SedesContext dbContext)
+        public SeatController(ILogger<RoomController> logger, SedesContext dbContext, IMapper mapper)
         {
             _logger = logger;
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
 
@@ -35,17 +40,9 @@ namespace sedes.Controllers
         /// <returns>The list of seat</returns>
         [HttpGet]
         [EnableQuery]
-        public IQueryable<Seat> Get(int RoomId = -1)
+        public IQueryable<ZSeat> Get()
         {
-            if (RoomId > 0)
-            {
-                var room = _dbContext.Room.Single(a => (a.Id == RoomId));
-                //var room = _dbContext.Seat.Where((e) => (e.RoomId = RoomId));
-                var seats = _dbContext.Seat.Where(s => s.Room == room);
-                return seats;
-            }
-
-            return _dbContext.Seat;
+            return _dbContext.Seat.ProjectTo<ZSeat>(_mapper.ConfigurationProvider);
         }
 
         /// <summary>

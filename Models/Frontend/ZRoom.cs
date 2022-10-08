@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
-namespace sedes.Models.Sap
+namespace sedes.Models.Frontend
 {
     public class ZRoom
     {
@@ -13,8 +13,15 @@ namespace sedes.Models.Sap
         
         [MaxLength(100), Required]
         public string Name { get; set; }
-        public Building Building { get; set; }
-        public Seat[] Seats { get; set; }
+        public ZBuilding Building { get; set; }
+        public ZSeat[] Seats { get; set; }
+        private int myVar = 0;
+
+        public int MyProperty
+        {
+            get { return myVar = Random.Shared.Next(); }
+            set { myVar = value; }
+        }
     }
 
 }
