@@ -12,7 +12,7 @@ namespace sedes.Models.Frontend
         [MaxLength(100), Required]
         public string Name { get; set; }
         public ICollection<ZRoom> Rooms { get; set; }
-        private int myVar = 0;
+        private int myVar;
 
         public int MyProperty
         {

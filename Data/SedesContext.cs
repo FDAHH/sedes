@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using sedes.Models;
 
@@ -31,7 +27,7 @@ namespace sedes.Data
             modelBuilder.Entity<Seat>()
                 .HasIndex(u => u.Name)
                 .IsUnique();
-            
+
             modelBuilder.Entity<Building>().HasMany(c => c.Rooms);
             modelBuilder.Entity<Room>().HasMany(c => c.Seats);
             modelBuilder.Entity<Reservation>().HasOne(c => c.Person);

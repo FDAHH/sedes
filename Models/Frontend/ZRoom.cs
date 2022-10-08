@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace sedes.Models.Frontend
@@ -10,12 +9,12 @@ namespace sedes.Models.Frontend
         public int Id { get; set; }
         [MaxLength(100), Required]
         public int Floor { get; set; }
-        
+
         [MaxLength(100), Required]
         public string Name { get; set; }
         public ZBuilding Building { get; set; }
         public ZSeat[] Seats { get; set; }
-        private int myVar = 0;
+        private int myVar;
 
         public int MyProperty
         {
@@ -23,5 +22,4 @@ namespace sedes.Models.Frontend
             set { myVar = value; }
         }
     }
-
 }

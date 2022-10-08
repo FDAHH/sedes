@@ -9,9 +9,8 @@ using Microsoft.OData.Edm;
 using Microsoft.OData.ModelBuilder;
 using Microsoft.OpenApi.Models;
 using sedes.Data;
-using sedes.Models;
-using sedes.Models.Maps;
 using sedes.Models.Frontend;
+using sedes.Models.Maps;
 
 namespace sedes
 {

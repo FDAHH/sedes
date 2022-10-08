@@ -1,12 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using sedes.Data;
+using sedes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using sedes.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using sedes.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace sedes.Controllers
 {
@@ -39,15 +38,16 @@ namespace sedes.Controllers
             {
                 var person = _dbContext.Person.Single(a => (a.Id == PersonId));
                 var seat = _dbContext.Seat.Single(a => (a.Id == SeatId));
-                var reservation = new Reservation {
+                var reservation = new Reservation
+                {
                     Person = person,
                     Seat = seat,
                     Start = start,
                     End = end
                 };
-                
-                var dbResult =_dbContext.Reservation.Add(reservation);
-                 _dbContext.SaveChanges();
+
+                var dbResult = _dbContext.Reservation.Add(reservation);
+                _dbContext.SaveChanges();
                 return new OkObjectResult(dbResult.Entity);
             }
             catch (InvalidOperationException)
@@ -58,17 +58,17 @@ namespace sedes.Controllers
             {
                 //TODO: should not expose Error Message to Caller
                 return new BadRequestObjectResult(e.InnerException?.Message);
-            }            
+            }
         }
         [HttpPost]
-        public IEnumerable<Seat> GetAvailableSeats(int BuildingId, DateTime date )
+        public IEnumerable<Seat> GetAvailableSeats(int BuildingId, DateTime date)
         {
             List<Seat> d = new System.Collections.Generic.List<Seat>();
-            
+
             var building = _dbContext.Building
-                    .Include(x => x.Rooms) 
+                    .Include(x => x.Rooms)
                     .ThenInclude(x => x.Seats)
-                    .Single(x => (x.Id ==BuildingId));
+                    .Single(x => (x.Id == BuildingId));
             var availableSeats = _dbContext.Seat.Where(a => (a.isAvailable == true));
 
             var reservationForDate = _dbContext.Reservation
@@ -77,13 +77,14 @@ namespace sedes.Controllers
                     .ToHashSet<int>();
             // TODO: Find rooms that have no reservation during for give DateTime
 
-            
-            var seats =  building.Rooms
+
+            var seats = building.Rooms
             .Where(x => (x.Seats.All(y => (!reservationForDate.Contains(y.Id)))))
             .Select(x => (x.Seats));
-            
 
-            foreach(var i in seats) {
+
+            foreach (var i in seats)
+            {
                 d.AddRange(i);
             }
             return d;

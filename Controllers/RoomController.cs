@@ -1,16 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using sedes.Models;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.OData.Query;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using sedes.Data;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.OData.Query;
-using AutoMapper.QueryableExtensions;
+using sedes.Models;
 using sedes.Models.Frontend;
-using AutoMapper;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace sedes.Controllers
 {
@@ -47,8 +46,8 @@ namespace sedes.Controllers
             {
                 var building = _dbContext.Building.Single(a => (a.Id == BuildingID));
                 // Init list if null
-                
-                building.Rooms = building.Rooms== null ?  new List<Room>(): building.Rooms;
+
+                building.Rooms = building.Rooms == null ? new List<Room>() : building.Rooms;
                 Room item = new Room
                 {
                     Floor = Floor,

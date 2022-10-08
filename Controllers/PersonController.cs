@@ -1,12 +1,11 @@
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using sedes.Data;
+using sedes.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using sedes.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
-using sedes.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace sedes.Controllers
 {
@@ -37,9 +36,9 @@ namespace sedes.Controllers
         {
             try
             {
-                var person = new Person{ ExtRef = ExtRef};
-                var dbResult =_dbContext.Person.Add(person);
-                 _dbContext.SaveChanges();
+                var person = new Person { ExtRef = ExtRef };
+                var dbResult = _dbContext.Person.Add(person);
+                _dbContext.SaveChanges();
                 return new OkObjectResult(dbResult.Entity);
             }
             catch (InvalidOperationException)
@@ -50,7 +49,7 @@ namespace sedes.Controllers
             {
                 //TODO: should not expose Error Message to Caller
                 return new BadRequestObjectResult(e.InnerException?.Message);
-            }            
+            }
         }
     }
 }
